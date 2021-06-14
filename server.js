@@ -25,7 +25,7 @@ async function cache(req, res, next) {
             next()
         else {
             console.log('read from cache')
-            res.status(200).send(JSON.parse(rockets))
+            res.status(200).send(JSON.parse(rockets), 'EX', 5)
         }
     }
     catch (error) {
@@ -37,7 +37,7 @@ async function cache(req, res, next) {
 function api(req, res) {
     axios.get('https://api.spacexdata.com/v3/rockets').then(response => {
         let rockets = response.data
-        redisSet('rockets', JSON.stringify(rockets)).catch(console.error)
+        redisSet('rockets', JSON.stringify(rockets), 'EX', 5).catch(console.error)
         console.log('read from api')
         res.status(response.status).send(rockets)
     })
